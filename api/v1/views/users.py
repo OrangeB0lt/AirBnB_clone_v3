@@ -60,7 +60,7 @@ def putUser(user_id):
     if not request.get_json():
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
     for attr, value in request.get_json().items():
-        if attr not in ['id', 'created_at', 'updated_at']:
+        if attr not in ['id', 'created_at', 'updated_at', 'email']:
             setattr(userUpdate, attr, value)
     userUpdate.save()
     return jsonify(userUpdate.to_dict())
