@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""places.py"""
+''' places viewer '''
 
 from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
@@ -49,11 +49,11 @@ def deletePlace(place_id):
 def postPlace(city_id):
     ''' create a new place '''
     city = storage.get("City", city_id)
-    kwargs = request.get_json()
     if city is None:
         abort(404)
     if not request.get_json():
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
+    kwargs = request.get_json()
     if 'user_id' not in kwargs:
         return make_response(jsonify({'error': 'Missing user_id'}), 400)
     user = storage.get("User", kwargs['user_id'])
