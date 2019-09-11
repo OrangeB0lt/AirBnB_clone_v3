@@ -79,6 +79,6 @@ def putPlace(place_id):
     for attr, value in request.get_json().items():
         if attr not in ['id', 'user_id', 'city_id', 'created_at',
                         'updated_at']:
-            setattr(place, attr, value)
+            setattr(placeUpdate, attr, value)
     placeUpdate.save()
     return jsonify(placeUpdate.to_dict())
