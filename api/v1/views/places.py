@@ -83,7 +83,7 @@ def putPlace(place_id):
     placeUpdate.save()
     return jsonify(placeUpdate.to_dict())
 
-@app_views.route('/places_search', methods=['POST'], strict_slashes=False)
+@app_views.route('/places_search', methods=['POST'])
 def postPlacesSearch():
     ''' places route to handle http method for request to search places '''
     searches = flask.request.get_json(silent=True)
