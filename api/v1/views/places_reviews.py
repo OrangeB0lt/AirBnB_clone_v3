@@ -53,6 +53,12 @@ def postReview(place_id):
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
     if 'user_id' not in request.get_json():
         return make_response(jsonify({'error': 'Missing user_id'}), 400)
+    if type(request.get_json()) is dict:
+        if storage.get('User', request.get_json()['user_id']) is None:
+            abort(404)
+    if 'text' not in request.get_json():
+        return make_response(jsonify({'error': 'Missing text'}), 400)
+
     reviewPost = Review(**request.get_json())
     setattr(reviewPost, 'place_id', place_id)
     reviewPost.save()
@@ -69,7 +75,8 @@ def putReview(review_id):
     if not request.get_json():
         return make_response(jsonify({'error': 'Not a JSON'}), 400)
     for attr, value in request.get_json().items():
-        if attr not in ['id', 'created_at', 'updated_at', 'place_id', 'user_id']:
+        if attr not in ['id', 'created_at',
+                        'updated_at', 'place_id', 'user_id']:
             setattr(reviewUpdate, attr, value)
     reviewUpdate.save()
     return jsonify(reviewUpdate.to_dict())
