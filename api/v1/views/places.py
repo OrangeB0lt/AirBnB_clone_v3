@@ -97,9 +97,9 @@ def postPlacesSearch():
             if amenity:
                 amenity_objects.append(amenity)
         if states == cities == []:
-            placesSelected = storage.all('Place').values()
+            places = storage.all('Place').values()
         else:
-            placesSelected = []
+            places = []
             for state_id in states:
                 state = storage.get('State', state_id)
                 state_cities = state.cities
@@ -108,10 +108,10 @@ def postPlacesSearch():
                         cities.append(city.id)
             for city_id in cities:
                 city = storage.get('City', city_id)
-                for place in city.placesSelected:
-                    placesSelected.append(place)
+                for place in city.places:
+                    places.append(place)
         confirmed_places = []
-        for place in placesSelected:
+        for place in places:
             place_amenities = place.amenities
             confirmed_places.append(place.to_dict())
             for amenity in amenity_objects:
