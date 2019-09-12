@@ -86,38 +86,24 @@ def putPlace(place_id):
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def postPlacesSearch():
     ''' places route to handle http method for request to search places '''
-    if request.get_json() is not None:
-        paramaters = request.get_json()
-        states = paramaters.get('states', [])
-        cities = paramaters.get('cities', [])
-        amenities = paramaters.get('amenities', [])
-        amenObj = []
-        for amenity_id in amenities:
-            amenity = storage.get('Amenity', amenity_id)
-            if amenity:
-                amenObj.append(amenity)
-        if states == cities == []:
-            places = storage.all('Place').values()
-        else:
-            places = []
-            for state_id in states:
-                state = storage.get('State', state_id)
-                state_cities = state.cities
-                for city in state_cities:
-                    if city.id not in cities:
-                        cities.append(city.id)
-            for city_id in cities:
-                city = storage.get('City', city_id)
-                for place in city.places:
-                    places.append(place)
-        vPlaces = []
-        for place in places:
-            place_amenities = place.amenities
-            vPlaces.append(place.to_dict())
-            for amenity in amenObj:
-                if amenity not in place_amenities:
-                    vPlaces.pop()
-                    break
-        return jsonify(vPlaces)
-    else:
-        return make_response(jsonify({'error': 'Not a JSON'}), 400)
+    searches = flask.request.get_json(silent=True)
+    if searches is None:
+        return flask.make_response(flask.jsonify(error="Not a JSON"), 400)
+    places = models.storage.all('Place').values()
+    if 'states' in searches and len(searches['states']) > 0:
+        places = [
+            place for place in places
+            if place.city.state.id in searches['states']
+        ]
+    if 'cities' in searches and len(searches['cities']) > 0:
+        places = [
+            place for place in places
+            if place.city.id in searches['cities']
+        ]
+    if 'amenities' in searches and len(searches['amenities']) > 0:
+        amenities = set(searches['amenities'])
+        places = [
+            place for place in places
+            if amenities - set(am.id for am in place.amenities) == set()
+        ]
+    return flask.jsonify([place.to_dict() for place in places])
