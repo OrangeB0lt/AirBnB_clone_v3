@@ -86,10 +86,10 @@ def putPlace(place_id):
 @app_views.route('/places_search', methods=['POST'])
 def postPlacesSearch():
     ''' places route to handle http method for request to search places '''
-    searches = flask.request.get_json(silent=True)
+    searches = request.get_json(silent=True)
     if searches is None:
-        return flask.make_response(flask.jsonify(error="Not a JSON"), 400)
-    places = models.storage.all('Place').values()
+        return make_response(jsonify(error="Not a JSON"), 400)
+    places = storage.all('Place').values()
     if 'states' in searches and len(searches['states']) > 0:
         places = [
             place for place in places
@@ -106,4 +106,4 @@ def postPlacesSearch():
             place for place in places
             if amenities - set(am.id for am in place.amenities) == set()
         ]
-    return flask.jsonify([place.to_dict() for place in places])
+    return jsonify([place.to_dict() for place in places])
