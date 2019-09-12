@@ -5,7 +5,8 @@ from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from models import storage
 from models.amenity import Amenity
-
+#from models.engine.db_storage import DBStorage
+#from models.engine.file_storage import FileStorage
 
 @app_views.route('/places/<string:place_id>/amenities', methods=['GET'],
                  strict_slashes=False)
@@ -21,7 +22,8 @@ def getPAmenities(place_id):
     return (jsonify(amenitiesList))
 
 
-@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>', methods=['DELETE'],
+@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>',
+                 methods=['DELETE'],
                  strict_slashes=False)
 def deletePAmenity(place_id, amenity_id):
     ''' deletes named amenity based on its place_id and amenityid '''
@@ -39,8 +41,8 @@ def deletePAmenity(place_id, amenity_id):
     abort(404)
 
 
-
-@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>', methods=['POST'],
+@app_views.route('/places/<string:place_id>/amenities/<string:amenity_id>',
+                 methods=['POST'],
                  strict_slashes=False)
 def linkAmenity(place_id, amenity_id):
     place = storage.get("Place", place_id)
@@ -51,7 +53,7 @@ def linkAmenity(place_id, amenity_id):
         abort(404)
     for amenity in place.amenities:
         if amenity.id == amenity_id:
-            abort(404)
+            return (jsonify(amenity.to_dict()), 200)
     place.amenities.append(the_amenity)
     storage.save()
     return (jsonify(the_amenity.to_dict()), 201)
