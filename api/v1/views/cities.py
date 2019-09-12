@@ -64,7 +64,6 @@ def postCity(state_id):
 def putCity(city_id):
     ''' updates named city '''
     cityUpdate = storage.get("City", city_id)
-    print(cityUpdate)
     if cityUpdate is None:
         abort(404)
     if not request.get_json():
