@@ -84,13 +84,13 @@ def putPlace(place_id):
     return jsonify(placeUpdate.to_dict())
 
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
-def postPlacesSearch():
+def post_places_search():
     """searches for a place"""
     if request.get_json() is not None:
-        parameters = request.get_json()
-        states = parameters.get('states', [])
-        cities = parameters.get('cities', [])
-        amenities = parameters.get('amenities', [])
+        params = request.get_json()
+        states = params.get('states', [])
+        cities = params.get('cities', [])
+        amenities = params.get('amenities', [])
         amenity_objects = []
         for amenity_id in amenities:
             amenity = storage.get('Amenity', amenity_id)
