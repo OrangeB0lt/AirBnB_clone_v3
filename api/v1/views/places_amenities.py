@@ -5,8 +5,7 @@ from api.v1.views import app_views
 from flask import abort, jsonify, make_response, request
 from models import storage
 from models.amenity import Amenity
-#from models.engine.db_storage import DBStorage
-#from models.engine.file_storage import FileStorage
+
 
 @app_views.route('/places/<string:place_id>/amenities', methods=['GET'],
                  strict_slashes=False)
